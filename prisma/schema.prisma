@@ -1,0 +1,177 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum EventType {
+  FITNESS
+  TRIP
+}
+
+enum QuestionType {
+  TEXT
+  RADIO
+  CHECKBOX
+}
+
+enum RegistrationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CONFIRMED
+}
+
+enum PaymentStatus {
+  CREATED
+  PAID
+  FAILED
+}
+
+model User {
+  id               String         @id @default(cuid())
+  name             String?
+  email            String         @unique
+  password         String?
+  role             Role           @default(USER)
+  gender           Gender?
+  age              Int?
+  phone            String?
+  profileCompleted Boolean        @default(false)
+  emailVerified    DateTime?
+  image            String?
+  createdAt        DateTime       @default(now())
+  eventsCreated    Event[]
+  registrations    Registration[]
+  leaderboard      Leaderboard[]
+  accounts         Account[]
+  sessions         Session[]
+}
+
+model Event {
+  id            String         @id @default(cuid())
+  title         String
+  description   String
+  type          EventType
+  date          DateTime
+  imageUrl      String?
+  location      String         @default("GAITTRIB ARENA")
+  price         Int
+  capacity      Int
+  createdById   String
+  createdBy     User           @relation(fields: [createdById], references: [id])
+  createdAt     DateTime       @default(now())
+  registrations Registration[]
+  leaderboard   Leaderboard[]
+  questions     EventQuestion[]
+}
+
+model Registration {
+  id         String             @id @default(cuid())
+  userId     String
+  eventId    String
+  status     RegistrationStatus @default(PENDING)
+  createdAt  DateTime           @default(now())
+  approvedAt DateTime?
+  paidAt     DateTime?
+  user       User               @relation(fields: [userId], references: [id])
+  event      Event              @relation(fields: [eventId], references: [id])
+  payment    Payment?
+  answers    RegistrationAnswer[]
+
+  @@unique([userId, eventId])
+}
+
+model Payment {
+  id              String        @id @default(cuid())
+  registrationId  String        @unique
+  razorpayOrderId String        @unique
+  amount          Int
+  platformFee     Int
+  organizerAmount Int
+  status          PaymentStatus @default(CREATED)
+  createdAt       DateTime      @default(now())
+  registration    Registration  @relation(fields: [registrationId], references: [id])
+}
+
+model Leaderboard {
+  id      String @id @default(cuid())
+  eventId String
+  userId  String
+  score   Int
+  rank    Int
+  event   Event  @relation(fields: [eventId], references: [id])
+  user    User   @relation(fields: [userId], references: [id])
+
+  @@unique([eventId, userId])
+  @@unique([eventId, rank])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model EventQuestion {
+  id        String  @id @default(cuid())
+  eventId   String
+  label     String
+  type      QuestionType
+  required  Boolean  @default(false)
+  options   Json?
+  event     Event    @relation(fields: [eventId], references: [id])
+  answers   RegistrationAnswer[]
+}
+
+model RegistrationAnswer {
+  id              String   @id @default(cuid())
+  registrationId  String
+  questionId      String
+  answer          String
+  registration    Registration @relation(fields: [registrationId], references: [id])
+  question        EventQuestion @relation(fields: [questionId], references: [id])
+}

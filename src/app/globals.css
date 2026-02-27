@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background-primary: #0b1220;
+  --background-secondary: #0f172a;
+  --card-bg: #111827;
+  --accent-primary: #1e90ff;
+  --accent-glow: #00c2ff;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border-soft: rgba(255, 255, 255, 0.08);
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--background-primary);
+  color: var(--text-primary);
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-white/10 bg-[#111827] shadow-lg backdrop-blur-[4px];
+  }
+
+  .section-shell {
+    @apply mx-auto max-w-6xl px-4 sm:px-6;
+  }
+
+  .surface-hover {
+    @apply transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lift;
+  }
+
+  .section-block {
+    @apply py-14 sm:py-16 lg:py-20;
+  }
+
+  .reveal-up {
+    @apply animate-reveal-up;
+  }
+}
+
