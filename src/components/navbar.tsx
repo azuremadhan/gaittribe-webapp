@@ -1,7 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { Compass, Menu, Trophy, User, Users, X } from "lucide-react";
+import { Compass, LayoutDashboard, Menu, Trophy, User, Users, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
@@ -26,47 +27,30 @@ export function Navbar() {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (!menuRef.current) return;
-      if (!menuRef.current.contains(event.target as Node)) {
-        setProfileOpen(false);
-      }
+      if (!menuRef.current.contains(event.target as Node)) setProfileOpen(false);
     };
-
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setProfileOpen(false);
-      }
-    };
-
     document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleEscape);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscape);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const linkClass = (href: string) =>
-    `inline-flex items-center gap-2 text-sm font-medium transition duration-200 ${
-      pathname === href ? "text-[#1E90FF]" : "text-[#94A3B8] hover:text-[#00C2FF]"
+    `inline-flex items-center gap-2 text-sm font-semibold transition ${
+      pathname === href ? "text-white" : "text-text-secondary hover:text-accent-glow"
     }`;
 
   return (
-    <header className="fixed top-0 z-40 h-[70px] w-full border-b border-white/5 bg-[rgba(11,18,32,0.8)] px-4 backdrop-blur-lg sm:px-8">
-      <div className="mx-auto flex h-full max-w-7xl items-center justify-between">
+    <header className="fixed top-0 z-50 w-full border-b border-white/10 bg-[#0b1220]/85 backdrop-blur-xl">
+      <div className="section-shell flex h-[72px] items-center justify-between">
         <Link href="/" className="flex items-center gap-3">
-          <img
-            src={LOGO_PRIMARY}
-            alt="GAITTRIB logo"
-            className="h-9 w-9 rounded-md object-contain"
-            onError={(event) => {
-              const target = event.currentTarget;
-              if (target.src.endsWith(LOGO_FALLBACK)) return;
-              target.src = LOGO_FALLBACK;
-            }}
-          />
+          <div className="relative h-10 w-10 overflow-hidden rounded-xl border border-white/20 bg-white/5">
+            <Image src={LOGO_PRIMARY} alt="GAITTRIB logo" fill className="object-cover" onError={(e) => {
+              const img = e.currentTarget as HTMLImageElement;
+              img.src = LOGO_FALLBACK;
+            }} />
+          </div>
           <div className="leading-tight">
-            <p className="text-base font-extrabold tracking-[0.12em] text-white">GAITTRIB</p>
-            <p className="text-[11px] font-medium text-[#64748B]">Sports Community Platform</p>
+            <p className="text-sm font-black tracking-[0.24em] text-white">GAITTRIB</p>
+            <p className="text-[11px] text-text-secondary">Every sport. Every weekend.</p>
           </div>
         </Link>
 
@@ -76,7 +60,7 @@ export function Navbar() {
             return (
               <Link key={item.href} href={item.href} className={linkClass(item.href)}>
                 <Icon size={16} />
-                <span>{item.label}</span>
+                {item.label}
               </Link>
             );
           })}
@@ -87,126 +71,58 @@ export function Navbar() {
             <div className="relative" ref={menuRef}>
               <button
                 onClick={() => setProfileOpen((prev) => !prev)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-[#F1F5F9] transition duration-200 hover:border-[#00C2FF]"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white hover:border-[#00C2FF]"
                 aria-label="Open profile menu"
               >
                 <User size={18} />
               </button>
 
               {profileOpen && (
-                <div className="absolute right-0 mt-2 min-w-[200px] rounded-xl border border-white/10 bg-[#111827] p-1 shadow-xl">
-                  <Link
-                    href="/complete-profile"
-                    onClick={() => setProfileOpen(false)}
-                    className="block rounded-lg px-3 py-2 text-sm text-[#F1F5F9] transition duration-200 hover:bg-[rgba(30,144,255,0.1)]"
-                  >
-                    Profile
-                  </Link>
-                  <Link
-                    href="/my-registrations"
-                    onClick={() => setProfileOpen(false)}
-                    className="block rounded-lg px-3 py-2 text-sm text-[#F1F5F9] transition duration-200 hover:bg-[rgba(30,144,255,0.1)]"
-                  >
-                    My Registrations
-                  </Link>
+                <div className="absolute right-0 mt-2 min-w-[220px] rounded-2xl border border-white/10 bg-[#0f172a] p-2 shadow-2xl">
+                  <Link href="/complete-profile" onClick={() => setProfileOpen(false)} className="block rounded-xl px-3 py-2 text-sm text-text-primary hover:bg-white/5">Profile</Link>
+                  <Link href="/my-registrations" onClick={() => setProfileOpen(false)} className="block rounded-xl px-3 py-2 text-sm text-text-primary hover:bg-white/5">My Registrations</Link>
                   {isAdmin && (
-                    <Link
-                      href="/admin"
-                      onClick={() => setProfileOpen(false)}
-                      className="block rounded-lg px-3 py-2 text-sm text-[#F1F5F9] transition duration-200 hover:bg-[rgba(30,144,255,0.1)]"
-                    >
-                      Admin Dashboard
+                    <Link href="/admin" onClick={() => setProfileOpen(false)} className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-text-primary hover:bg-white/5">
+                      <LayoutDashboard size={15} /> Admin Dashboard
                     </Link>
                   )}
-                  <button
-                    onClick={() => signOut({ callbackUrl: "/" })}
-                    className="block w-full rounded-lg px-3 py-2 text-left text-sm text-[#F1F5F9] transition duration-200 hover:bg-[rgba(30,144,255,0.1)]"
-                  >
-                    Logout
-                  </button>
+                  <button onClick={() => signOut({ callbackUrl: "/" })} className="mt-1 block w-full rounded-xl px-3 py-2 text-left text-sm text-rose-200 hover:bg-rose-500/10">Logout</button>
                 </div>
               )}
             </div>
           ) : (
-            <Link
-              href="/signin"
-              className="rounded-full border border-white/20 px-4 py-2 text-sm font-medium text-[#F1F5F9] transition duration-200 hover:bg-white/10"
-            >
+            <Link href="/signin" className="rounded-full border border-white/20 bg-white/5 px-4 py-2 text-sm font-semibold text-white hover:border-[#00C2FF]">
               Login / Signup
             </Link>
           )}
         </div>
 
-        <button
-          className="rounded-xl border border-white/15 p-2 text-[#F1F5F9] lg:hidden"
-          onClick={() => setOpen((prev) => !prev)}
-          aria-label="Toggle navigation"
-        >
+        <button className="rounded-xl border border-white/15 p-2 text-white lg:hidden" onClick={() => setOpen((prev) => !prev)} aria-label="Toggle navigation">
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
 
       {open && (
-        <div className="border-t border-white/10 bg-[#0F172A] lg:hidden">
-          <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:px-8">
+        <div className="border-t border-white/10 bg-[#0b1220] lg:hidden">
+          <div className="section-shell flex flex-col gap-2 py-4">
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={linkClass(item.href)}
-                  onClick={() => setOpen(false)}
-                >
+                <Link key={item.href} href={item.href} className={`${linkClass(item.href)} rounded-lg px-2 py-2`} onClick={() => setOpen(false)}>
                   <Icon size={16} />
                   <span>{item.label}</span>
                 </Link>
               );
             })}
-
             {status === "authenticated" ? (
               <>
-                <Link
-                  href="/complete-profile"
-                  onClick={() => setOpen(false)}
-                  className="rounded-lg px-2 py-2 text-sm font-medium text-[#F1F5F9] transition duration-200 hover:bg-[rgba(30,144,255,0.1)]"
-                >
-                  Profile
-                </Link>
-                <Link
-                  href="/my-registrations"
-                  onClick={() => setOpen(false)}
-                  className="rounded-lg px-2 py-2 text-sm font-medium text-[#F1F5F9] transition duration-200 hover:bg-[rgba(30,144,255,0.1)]"
-                >
-                  My Registrations
-                </Link>
-                {isAdmin && (
-                  <Link
-                    href="/admin"
-                    onClick={() => setOpen(false)}
-                    className="rounded-lg px-2 py-2 text-sm font-medium text-[#F1F5F9] transition duration-200 hover:bg-[rgba(30,144,255,0.1)]"
-                  >
-                    Admin Dashboard
-                  </Link>
-                )}
-                <button
-                  onClick={() => {
-                    setOpen(false);
-                    signOut({ callbackUrl: "/" });
-                  }}
-                  className="rounded-lg px-2 py-2 text-left text-sm font-medium text-[#F1F5F9] transition duration-200 hover:bg-[rgba(30,144,255,0.1)]"
-                >
-                  Logout
-                </button>
+                <Link href="/complete-profile" onClick={() => setOpen(false)} className="rounded-lg px-2 py-2 text-sm text-white/90">Profile</Link>
+                <Link href="/my-registrations" onClick={() => setOpen(false)} className="rounded-lg px-2 py-2 text-sm text-white/90">My Registrations</Link>
+                {isAdmin && <Link href="/admin" onClick={() => setOpen(false)} className="rounded-lg px-2 py-2 text-sm text-white/90">Admin Dashboard</Link>}
+                <button onClick={() => { setOpen(false); signOut({ callbackUrl: "/" }); }} className="rounded-lg px-2 py-2 text-left text-sm text-rose-200">Logout</button>
               </>
             ) : (
-              <Link
-                href="/signin"
-                onClick={() => setOpen(false)}
-                className="inline-flex w-fit rounded-full border border-white/20 px-4 py-2 text-sm font-medium text-[#F1F5F9] transition duration-200 hover:bg-white/10"
-              >
-                Login / Signup
-              </Link>
+              <Link href="/signin" onClick={() => setOpen(false)} className="inline-flex w-fit rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white">Login / Signup</Link>
             )}
           </div>
         </div>

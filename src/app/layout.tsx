@@ -29,7 +29,7 @@ export default function RootLayout({
       <body className={`${inter.variable} bg-background-primary font-sans text-text-primary`}>
         <Providers>
           <Navbar />
-          {children}
+          <div className="pt-[72px]">{children}</div>
           <Footer />
         </Providers>
         <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
