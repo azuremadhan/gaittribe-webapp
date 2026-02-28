@@ -23,6 +23,18 @@ enum EventType {
   TRIP
 }
 
+enum EventCategory {
+  RUNNING
+  HYROX
+  FOOTBALL
+  BADMINTON
+  CRICKET
+  PICKLEBALL
+  RETREAT
+  TOURNAMENT
+  OTHER
+}
+
 enum QuestionType {
   TEXT
   RADIO
@@ -67,6 +79,7 @@ model Event {
   title         String
   description   String
   type          EventType
+  category      EventCategory  @default(OTHER)
   date          DateTime
   imageUrl      String?
   location      String         @default("GAITTRIB ARENA")

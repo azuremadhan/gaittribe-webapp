@@ -2,30 +2,21 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="mt-20 border-t border-white/10 bg-[#0b1220]/80 backdrop-blur">
+    <footer className="border-t border-white/[0.06] bg-[#0a0c10]">
       <div className="section-shell py-12">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="flex flex-col items-center gap-8 text-center">
           <div>
-            <p className="text-sm font-black tracking-[0.24em] text-white">GAITTRIB</p>
-            <p className="mt-3 text-sm text-text-secondary">
-              Every sport. Every level. Every weekend. Premium event experience for Chennai athletes.
-            </p>
+            <p className="text-xl font-bold text-white">GAITTRIB</p>
+            <p className="mt-2 text-sm text-zinc-500">Chennai's most active fitness community</p>
           </div>
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-text-secondary">Platform</p>
-            <p className="mt-3 text-sm text-slate-300">Structured registrations, verified rankings, and curated events.</p>
+          
+          <div className="flex flex-wrap justify-center gap-6">
+            <Link href="/" className="text-sm text-zinc-400 hover:text-white transition-colors">Explore</Link>
+            <Link href="/leaderboard" className="text-sm text-zinc-400 hover:text-white transition-colors">Leaderboard</Link>
+            <Link href="/community" className="text-sm text-zinc-400 hover:text-white transition-colors">Community</Link>
           </div>
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-text-secondary">Contact</p>
-            <a href="mailto:hello@gaittrib.com" className="mt-3 block text-sm text-slate-200 hover:text-accent-glow">
-              hello@gaittrib.com
-            </a>
-          </div>
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-text-secondary">Explore</p>
-            <Link href="/community" className="mt-3 block text-sm text-slate-200 hover:text-accent-glow">Community</Link>
-            <Link href="/leaderboard" className="mt-1 block text-sm text-slate-200 hover:text-accent-glow">Leaderboard</Link>
-          </div>
+          
+          <p className="text-xs text-zinc-600">© 2026 GAITTRIB. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -10,20 +10,17 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const variantMap: Record<ButtonVariant, string> = {
-  primary:
-    "bg-[linear-gradient(135deg,#1E90FF,#00C2FF)] text-white shadow-glow hover:scale-[1.03] hover:shadow-[0_12px_30px_rgba(0,194,255,0.4)]",
-  outline:
-    "border border-white/20 bg-transparent text-text-primary hover:bg-[rgba(30,144,255,0.1)]",
-  secondary: "bg-background-secondary text-text-primary hover:bg-card-bg",
-  ghost: "bg-transparent text-text-secondary hover:bg-white/5 hover:text-text-primary",
-  danger: "bg-rose-500 text-white hover:bg-rose-600",
-  accent:
-    "bg-[linear-gradient(135deg,#1E90FF,#00C2FF)] text-white shadow-glow hover:scale-[1.03] hover:shadow-[0_12px_30px_rgba(0,194,255,0.4)]",
+  primary: "bg-[#e8c547] text-[#0a0c10] hover:bg-[#f0d36a]",
+  outline: "border border-white/[0.15] bg-transparent text-white hover:border-white/[0.3] hover:bg-white/[0.03]",
+  secondary: "bg-[#161a23] text-zinc-300 hover:bg-[#1e2330]",
+  ghost: "bg-transparent text-zinc-400 hover:text-white hover:bg-white/[0.04]",
+  danger: "bg-red-500/20 text-red-400 hover:bg-red-500/30",
+  accent: "bg-[#e8c547] text-[#0a0c10] hover:bg-[#f0d36a]",
 };
 
 const sizeMap: Record<ButtonSize, string> = {
-  sm: "px-3 py-2 text-xs",
-  md: "px-4 py-2.5 text-sm",
+  sm: "px-4 py-2 text-xs",
+  md: "px-5 py-2.5 text-sm",
   lg: "px-6 py-3 text-sm",
 };
 
@@ -39,15 +36,11 @@ export function Button({
   return (
     <button
       disabled={disabled || loading}
-      className={`group relative overflow-hidden rounded-xl font-semibold transition-all duration-300 ease-out disabled:opacity-60 ${variantMap[variant]} ${sizeMap[size]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-300 disabled:opacity-50 ${variantMap[variant]} ${sizeMap[size]} ${className}`}
       {...props}
     >
-      <span className="pointer-events-none absolute inset-0 opacity-0 transition duration-300 group-hover:opacity-100" style={{ background: "linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.2) 45%, transparent 100%)" }} />
-      <span className="relative inline-flex items-center gap-2">
-        {loading && <span className="h-3 w-3 animate-spin rounded-full border-2 border-white/50 border-t-white" />}
-        {children}
-      </span>
+      {loading && <span className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />}
+      {children}
     </button>
   );
 }
-

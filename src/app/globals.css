@@ -3,14 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --background-primary: #0b1220;
-  --background-secondary: #0f172a;
-  --card-bg: #111827;
-  --accent-primary: #1e90ff;
-  --accent-glow: #00c2ff;
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --border-soft: rgba(255, 255, 255, 0.08);
+  --background-primary: #0a0c10;
+  --background-secondary: #12151c;
+  --card-bg: #161a23;
+  --accent-primary: #e8c547;
+  --accent-secondary: #c9a83a;
+  --accent-glow: rgba(232, 197, 71, 0.15);
+  --text-primary: #f4f4f5;
+  --text-secondary: #71717a;
+  --text-muted: #52525b;
+  --border-soft: rgba(255, 255, 255, 0.06);
   color-scheme: dark;
 }
 
@@ -22,39 +24,69 @@ body {
 body {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 20% -10%, rgba(30, 144, 255, 0.18), transparent 35%),
-    radial-gradient(circle at 80% 0%, rgba(0, 194, 255, 0.14), transparent 30%),
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(232, 197, 71, 0.08), transparent),
+    linear-gradient(180deg, var(--background-primary) 0%, #0809100d 100%),
     var(--background-primary);
   color: var(--text-primary);
-  font-family: Inter, system-ui, -apple-system, sans-serif;
+  font-family: "DM Sans", Inter, system-ui, -apple-system, sans-serif;
+  letter-spacing: -0.01em;
 }
 
 @layer components {
   .card {
-    @apply rounded-2xl border border-white/10 bg-[#111827]/85 shadow-[0_10px_35px_rgba(2,8,24,0.5)] backdrop-blur;
+    @apply rounded-2xl border border-white/[0.06] bg-[#161a23]/60 shadow-[0_8px_32px_rgba(0,0,0,0.4)];
   }
 
   .section-shell {
-    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+    @apply mx-auto max-w-6xl px-5 sm:px-7;
   }
 
   .surface-hover {
-    @apply transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_14px_40px_rgba(0,194,255,0.12)];
+    @apply transition-all duration-500 ease-out hover:translate-y-[-2px];
   }
 
   .section-block {
-    @apply py-14 sm:py-16 lg:py-20;
+    @apply py-12 sm:py-16;
   }
 
   .reveal-up {
     @apply animate-reveal-up;
   }
 
-  .premium-border {
-    @apply border border-white/10;
+  .chip {
+    @apply inline-flex items-center rounded-full border border-white/[0.08] bg-white/[0.03] px-3.5 py-1.5 text-xs font-medium tracking-wide text-[#a1a1aa] transition-all duration-300 hover:border-[#e8c547]/30 hover:text-[#e8c547];
   }
 
-  .chip {
-    @apply inline-flex items-center rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold tracking-wide text-text-secondary;
+  .premium-border {
+    @apply border border-white/[0.06];
   }
+
+  h1, h2, h3 {
+    @apply tracking-tight;
+  }
+}
+
+/* Subtle animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-reveal-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* Premium button styles */
+.btn-primary {
+  @apply relative overflow-hidden rounded-full bg-[#e8c547] px-6 py-2.5 text-sm font-semibold text-[#0a0c10] transition-all duration-300 hover:bg-[#f0d36a] hover:shadow-[0_0_30px_rgba(232,197,71,0.3)];
+}
+
+.btn-outline {
+  @apply rounded-full border border-white/[0.15] bg-transparent px-6 py-2.5 text-sm font-medium text-white transition-all duration-300 hover:border-white/[0.3] hover:bg-white/[0.03];
 }

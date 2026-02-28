@@ -2,82 +2,77 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 
 const slides = [
   {
     image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=2200&q=80",
-    title: "Book. Compete. Belong.",
-    subtitle: "Premium weekend events for Chennai athletes.",
+    title: "Every Sport. Every Weekend.",
+    subtitle: "Chennai's most active fitness community",
   },
   {
     image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=2200&q=80",
-    title: "Structured Fitness Community",
-    subtitle: "From registration to leaderboard — one serious platform.",
+    title: "Train Together. Compete Forever.",
+    subtitle: "Join 1,600+ athletes across 14+ formats",
   },
   {
-    image: "https://images.unsplash.com/photo-1486286701208-1d58e9338013?auto=format&fit=crop&w=2200&q=80",
-    title: "Every Sport. Every Level.",
-    subtitle: "Build consistency with curated events every weekend.",
+    image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2200&q=80",
+    title: "Push Your Limits.",
+    subtitle: "HYROX, running & functional fitness events",
+  },
+  {
+    image: "https://images.unsplash.com/photo-1626245027680-80a0880cf248?auto=format&fit=crop&w=2200&q=80",
+    title: "Smash Your Goals.",
+    subtitle: "Badminton, cricket & tournament sports",
   },
 ];
 
-export function Hero({ hostHref }: { hostHref: string }) {
+export function Hero({ hostHref, isAdmin }: { hostHref: string; isAdmin: boolean }) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % slides.length);
-    }, 5500);
+    }, 6000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <section className="section-block pb-10 pt-6 sm:pt-8">
-      <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
-        <div className="relative h-[78vh] min-h-[520px] max-h-[820px]">
+    <section className="section-block">
+      <div className="relative overflow-hidden rounded-[2rem] bg-[#12151c]">
+        <div className="relative aspect-[2.4/1] min-h-[480px]">
           {slides.map((slide, index) => (
             <div
-              key={slide.image}
-              className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+              key={index}
+              className="absolute inset-0 bg-cover bg-center transition-all duration-1000"
               style={{
                 opacity: activeIndex === index ? 1 : 0,
-                backgroundImage: `linear-gradient(to right, rgba(6,12,25,0.88) 22%, rgba(6,12,25,0.55) 58%, rgba(6,12,25,0.86) 100%), url(${slide.image})`,
+                transform: activeIndex === index ? "scale(1)" : "scale(1.05)",
+                backgroundImage: `linear-gradient(to right, rgba(10,12,16,0.92) 0%, rgba(10,12,16,0.4) 50%, rgba(10,12,16,0.85) 100%), url(${slide.image})`,
               }}
             />
           ))}
 
-          <div className="section-shell relative z-10 flex h-full items-center">
-            <div className="max-w-3xl reveal-up">
-              <span className="chip">GAITTRIB · CHENNAI FITNESS COMMUNITY</span>
-              <h1 className="mt-5 text-4xl font-black uppercase leading-[1.05] tracking-wide text-white sm:text-6xl lg:text-7xl">
-                {slides[activeIndex].title}
-              </h1>
-              <p className="mt-4 max-w-2xl text-base text-text-secondary sm:text-lg">
-                {slides[activeIndex].subtitle}
-              </p>
+          <div className="absolute inset-0 flex items-center">
+            <div className="section-shell w-full">
+              <div className="max-w-xl">
+                <span className="chip mb-6 block w-fit">📍 Chennai</span>
+                <h1 className="text-5xl font-bold leading-[1.1] tracking-tight text-white sm:text-6xl lg:text-7xl">
+                  {slides[activeIndex].title}
+                </h1>
+                <p className="mt-5 text-lg text-zinc-400">
+                  {slides[activeIndex].subtitle}
+                </p>
 
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link href="#events">
-                  <Button size="lg">Explore Events</Button>
-                </Link>
-                <Link href={hostHref}>
-                  <Button size="lg" variant="outline">Host Event</Button>
-                </Link>
-              </div>
-
-              <div className="mt-10 grid max-w-xl grid-cols-3 gap-3">
-                <div className="rounded-xl border border-white/15 bg-white/5 p-3">
-                  <p className="text-xl font-extrabold text-white">500+</p>
-                  <p className="text-xs text-text-secondary">Athletes</p>
-                </div>
-                <div className="rounded-xl border border-white/15 bg-white/5 p-3">
-                  <p className="text-xl font-extrabold text-white">50+</p>
-                  <p className="text-xs text-text-secondary">Events hosted</p>
-                </div>
-                <div className="rounded-xl border border-white/15 bg-white/5 p-3">
-                  <p className="text-xl font-extrabold text-white">100%</p>
-                  <p className="text-xs text-text-secondary">Rank transparency</p>
+                <div className="mt-8 flex gap-4">
+                  <Link href="#events" className="btn-primary inline-flex items-center gap-2">
+                    Get Started <ArrowRight size={16} />
+                  </Link>
+                  {isAdmin && (
+                    <Link href={hostHref} className="btn-outline">
+                      Host Event
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
@@ -88,8 +83,7 @@ export function Hero({ hostHref }: { hostHref: string }) {
               <button
                 key={idx}
                 onClick={() => setActiveIndex(idx)}
-                className={`h-2.5 rounded-full transition-all ${activeIndex === idx ? "w-8 bg-accent-glow" : "w-2.5 bg-white/35"}`}
-                aria-label={`Go to slide ${idx + 1}`}
+                className={`h-1 rounded-full transition-all duration-500 ${activeIndex === idx ? "w-8 bg-[#e8c547]" : "w-6 bg-white/20"}`}
               />
             ))}
           </div>

@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Inter } from "next/font/google";
+import { DM_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { Providers } from "@/components/providers";
 
-const inter = Inter({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-dm-sans",
 });
 
 export const metadata: Metadata = {
-  title: "GAITTRIB | PLAY HARD. COMPETE SMART.",
-  description: "Join curated sports events powered by GAITTRIB.",
+  title: "GAITTRIB | Every Sport. Every Weekend.",
+  description: "Chennai's most active fitness community. Join events, compete, and track your progress.",
   icons: {
     icon: "/icon.svg",
   },
@@ -26,10 +27,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} bg-background-primary font-sans text-text-primary`}>
+      <body className={`${dmSans.variable} bg-[#0a0c10] font-sans text-zinc-100 antialiased`}>
         <Providers>
           <Navbar />
-          <div className="pt-[72px]">{children}</div>
+          <main className="min-h-screen pt-16">{children}</main>
           <Footer />
         </Providers>
         <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
@@ -37,4 +38,3 @@ export default function RootLayout({
     </html>
   );
 }
-

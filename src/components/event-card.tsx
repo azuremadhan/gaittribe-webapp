@@ -1,9 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Calendar, DollarSign, MapPin, Users } from "lucide-react";
-import type { EventType } from "@prisma/client";
+import { Calendar, MapPin, Users } from "lucide-react";
+import type { EventCategory, EventType } from "@prisma/client";
 import { formatDate, formatINR } from "@/lib/format";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 type EventCardProps = {
@@ -12,6 +11,7 @@ type EventCardProps = {
     title: string;
     description: string;
     type: EventType;
+    category: EventCategory;
     date: Date;
     location: string;
     price: number;
@@ -20,9 +20,28 @@ type EventCardProps = {
   };
 };
 
-const imageByType: Record<EventType, string> = {
-  FITNESS: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1200&q=80",
-  TRIP: "https://images.unsplash.com/photo-1501555088652-021faa106b9b?auto=format&fit=crop&w=1200&q=80",
+const imageByCategory: Record<EventCategory, string> = {
+  RUNNING: "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=800&q=80",
+  HYROX: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80",
+  FOOTBALL: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=800&q=80",
+  BADMINTON: "https://images.unsplash.com/photo-1626245027680-80a0880cf248?auto=format&fit=crop&w=800&q=80",
+  CRICKET: "https://images.unsplash.com/photo-1531415074968-b2a8f5f9b6f8?auto=format&fit=crop&w=800&q=80",
+  PICKLEBALL: "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&w=800&q=80",
+  RETREAT: "https://images.unsplash.com/photo-1501555088652-021faa106b9b?auto=format&fit=crop&w=800&q=80",
+  TOURNAMENT: "https://images.unsplash.com/photo-1461896836934-4d463d1d3a78?auto=format&fit=crop&w=800&q=80",
+  OTHER: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80",
+};
+
+const categoryColors: Record<EventCategory, string> = {
+  RUNNING: "bg-rose-500/20 text-rose-400",
+  HYROX: "bg-orange-500/20 text-orange-400",
+  FOOTBALL: "bg-green-500/20 text-green-400",
+  BADMINTON: "bg-amber-500/20 text-amber-400",
+  CRICKET: "bg-red-500/20 text-red-400",
+  PICKLEBALL: "bg-emerald-500/20 text-emerald-400",
+  RETREAT: "bg-violet-500/20 text-violet-400",
+  TOURNAMENT: "bg-cyan-500/20 text-cyan-400",
+  OTHER: "bg-zinc-500/20 text-zinc-400",
 };
 
 function getStatus(event: EventCardProps["event"]) {
@@ -31,67 +50,64 @@ function getStatus(event: EventCardProps["event"]) {
   return "OPEN" as const;
 }
 
-function getBadgeVariant(status: ReturnType<typeof getStatus>) {
-  if (status === "OPEN") return "open" as const;
-  if (status === "FULL") return "full" as const;
-  return "closed" as const;
-}
-
 export function EventCard({ event }: EventCardProps) {
   const status = getStatus(event);
   const taken = event._count.registrations;
   const fill = Math.min((taken / event.capacity) * 100, 100);
 
   return (
-    <article className="card group overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-lift">
-      <div className="relative aspect-video overflow-hidden">
-        <Image
-          src={imageByType[event.type]}
-          alt={`${event.type} event`}
-          fill
-          className="object-cover transition duration-500 group-hover:scale-105"
-        />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-        <div className="absolute left-3 top-3">
-          <Badge variant="open">{event.type}</Badge>
-        </div>
-        <div className="absolute right-3 top-3">
-          <Badge variant={getBadgeVariant(status)}>{status}</Badge>
-        </div>
-      </div>
-
-      <div className="p-5">
-        <h3 className="line-clamp-1 text-xl font-extrabold tracking-tight text-ink">{event.title}</h3>
-        <p className="mt-2 line-clamp-2 text-sm text-muted">{event.description}</p>
-
-        <div className="mt-4 space-y-2 text-sm text-text-secondary">
-          <p className="inline-flex items-center gap-2"><MapPin size={15} /> {event.location}</p>
-          <p className="inline-flex items-center gap-2"><Calendar size={15} /> {formatDate(event.date)}</p>
-        </div>
-
-        <div className="mt-4">
-          <div className="mb-1 flex items-center justify-between text-xs text-muted">
-            <span className="inline-flex items-center gap-1"><Users size={13} /> {taken}/{event.capacity}</span>
-            <span>{Math.max(event.capacity - taken, 0)} spots left</span>
+    <Link href={`/events/${event.id}`} className="group block">
+      <article className="card overflow-hidden transition-all duration-300 hover:border-[#e8c547]/30">
+        <div className="relative aspect-[16/10] overflow-hidden">
+          <Image
+            src={imageByCategory[event.category] || imageByCategory.OTHER}
+            alt={event.title}
+            fill
+            className="object-cover transition duration-500 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          
+          <div className="absolute left-3 top-3">
+            <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider ${categoryColors[event.category]}`}>
+              {event.category}
+            </span>
           </div>
-          <div className="h-2 rounded-full bg-white/10">
-            <div
-              className="h-2 animate-pulse-bar rounded-full bg-accent-primary transition-all duration-500 group-hover:bg-accent-glow"
-              style={{ width: `${fill}%` }}
-            />
-          </div>
+          
+          {status !== "OPEN" && (
+            <div className="absolute right-3 top-3">
+              <span className="rounded-full bg-black/60 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
+                {status}
+              </span>
+            </div>
+          )}
         </div>
 
-        <div className="mt-5 flex items-end justify-between">
-          <span className="inline-flex items-center gap-1 rounded-full bg-accent-primary px-3 py-1 text-xs font-bold text-white">
-            <DollarSign size={13} />
-            {formatINR(event.price * 100)}
-          </span>
-          <Link href={`/events/${event.id}`}>
-            <Button variant="accent" size="sm">Register Now</Button>
-          </Link>
+        <div className="p-4">
+          <h3 className="text-lg font-semibold text-white truncate">{event.title}</h3>
+          
+          <div className="mt-3 flex items-center gap-4 text-xs text-zinc-500">
+            <span className="flex items-center gap-1">
+              <Calendar size={12} />
+              {formatDate(event.date)}
+            </span>
+            <span className="flex items-center gap-1">
+              <MapPin size={12} />
+              {event.location}
+            </span>
+          </div>
+
+          <div className="mt-4 flex items-end justify-between">
+            <div>
+              <p className="text-lg font-bold text-[#e8c547]">₹{event.price * 100}</p>
+              <p className="flex items-center gap-1 text-xs text-zinc-500">
+                <Users size={11} />
+                {taken}/{event.capacity} registered
+              </p>
+            </div>
+            <Button size="sm" variant="accent">Register</Button>
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
+    </Link>
   );
 }
